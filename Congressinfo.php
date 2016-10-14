@@ -1,6 +1,9 @@
 <html>
 <head>
     <style>
+        body{
+            font-family: "Times New Roman";
+        }
         td {
             text-align: center;
         }
@@ -14,7 +17,7 @@
         .tab th, .tab td {
             border: 2px solid;
             text-align: center;
-            padding: 5px 15px;
+            padding: 2px 25px;
 
         }
 
@@ -128,6 +131,17 @@ endif;
         }
     }
 
+    function detail(bioid,state) {
+        var formbioid=document.getElementById("bioid");
+        formbioid.value=bioid;
+
+        var formstate=document.getElementById("biostate");
+        formstate.value=state;
+
+        document.getElementById('detailinfo').submit();
+
+    }
+
 
 </script>
 <div align="center">
@@ -184,6 +198,12 @@ endif;
         </div>
 
     </form>
+
+<form style="display: none" action="<?php echo $_SERVER["PHP_SELF"]; ?>" id="detailinfo" method="POST">
+    <input type="text" name="bioid" id="bioid">
+    <input type="text" name="biostate" id="biostate">
+    </form>
+
 </div>
 
 
@@ -209,7 +229,8 @@ endif;
             $name = $res->results[$i]->first_name . " " . $res->results[$i]->middle_name . " " . $res->results[$i]->last_name;
             $state = $res->results[$i]->state_name;
             $chamber = $res->results[$i]->chamber;
-            echo "<tr><td>$name</td><td>$state</td><td>$chamber</td><td><a href=''>View Details</a></td></tr>";
+            $bioid = $res->results[$i]->bioguide_id;
+            echo "<tr><td>$name</td><td>$state</td><td>$chamber</td><td><a href = \"javascript:detail('$bioid','$state');\">View Details</a></td></tr>";
         }
         echo "</table>";
     } else {
