@@ -20,7 +20,8 @@
 
         #init {
             border: 1px solid;
-            width: 28%;
+            display: inline-block;
+            padding: 5px;
         }
     </style>
 </head>
@@ -78,7 +79,7 @@ $state['washington'] = "WA";
 $state['west virginia'] = "WV";
 $state['wisconsin'] = "WI";
 $state['wyoming'] = "WY";
-$PREFIX = 'http://congress.api.sunlightfoundation.com/';
+$PREFIX = 'https://congress.api.sunlightfoundation.com/';
 
 if ($_SERVER["REQUEST_METHOD"] == "POST"):
     $database = $_POST["Database"];
@@ -91,30 +92,54 @@ endif;
 <script type="text/javascript">
     function oc() {
         if (document.getElementById("db").value == 'legislators') {
-            document.getElementById("ky").innerHTML = "State/Representative*"
+            document.getElementById("ky").innerHTML = "State/Representative*";
         }
         if (document.getElementById("db").value == 'committees') {
-            document.getElementById("ky").innerHTML = "Committee ID*"
+            document.getElementById("ky").innerHTML = "Committee ID*";
         }
         if (document.getElementById("db").value == 'bills') {
-            document.getElementById("ky").innerHTML = "Bill ID*"
+            document.getElementById("ky").innerHTML = "Bill ID*";
         }
         if (document.getElementById("db").value == 'amendments') {
-            document.getElementById("ky").innerHTML = "Amendment ID*"
+            document.getElementById("ky").innerHTML = "Amendment ID*";
         }
     }
+
+
+    function formcheck() {
+        if (document.getElementById("db").value == "noinput"&&document.getElementById("kys").value == "")
+        {
+            alert("Please enter the following missing information: Congress database, Keyword");
+            return false;
+        }
+
+        else if (document.getElementById("db").value == "noinput")
+        {
+            alert("Please enter the following missing information: Congress database");
+            return false;
+        }
+        else if(document.getElementById("kys").value == "")
+        {
+            alert("Please enter the following missing information: Keyword");
+            return false;
+        }
+        else {
+            return true;
+        }
+    }
+
 
 </script>
 <div align="center">
     <h2>Congrss Information Search</h2>
-    <form action="<?php echo $_SERVER["PHP_SELF"]; ?>" id="congressinfo" method="POST">
+    <form action="<?php echo $_SERVER["PHP_SELF"]; ?>" id="congressinfo" method="POST" onsubmit="return formcheck();" >
         <div id="init">
             <table border="0">
                 <tr>
                     <td>Congress Database</td>
                     <td>
                         <select name="Database" id="db" onchange="oc()">
-                            <option>Select your option</option>
+                            <option value="noinput">Select your option</option>
                             <option <?php if (isset($database) && $database == "legislators") echo "selected"; ?>
                                 value="legislators">Legislators
                             </option>
@@ -144,7 +169,7 @@ endif;
                 </tr>
                 <tr>
                     <td id="ky">Keywords</td>
-                    <td><input type="text" name="Keyword" value="<?php echo
+                    <td><input type="text" id="kys" name="Keyword" value="<?php echo
                         $keyword; ?>"></td>
                 </tr>
                 <tr>
