@@ -158,6 +158,28 @@ endif;
 
     }
 
+    function billdetail(billid,shorttitle,sponser,Intron,lastactionwidate,billurl) {
+        var formbillid = document.getElementById("billid");
+        formbillid.value = billid;
+
+        var formshorttitle = document.getElementById("shorttitle");
+        formshorttitle.value = shorttitle;
+
+        var formsponser = document.getElementById("sponser");
+        formsponser.value = sponser;
+
+        var formIntron = document.getElementById("Intron");
+        formIntron.value = Intron;
+
+        var formLAWD = document.getElementById("lastactionwidate");
+        formLAWD.value = lastactionwidate;
+
+        var formbillurl = document.getElementById("billurl");
+        formbillurl.value = billurl
+        ;
+        document.getElementById('billinfo').submit();
+    }
+
 
 </script>
 <div align="center">
@@ -220,7 +242,17 @@ endif;
         <input type="text" name="bioid" id="bioid">
         <input type="text" name="biostate" id="biostate">
         <input type="text" name="biochamber" id="biochamber">
-        <input style="display: none" type="text" name="TYPE" value="2">
+        <input type="text" name="TYPE" value="2">
+    </form>
+
+    <form style="display: none" action="<?php echo $_SERVER["PHP_SELF"]; ?>" id="billinfo" method="POST">
+        <input type="text" name="billid" id="billid">
+        <input type="text" name="shorttitle" id="shorttitle">
+        <input type="text" name="sponser" id="sponser">
+        <input type="text" name="Intron" id="Intron">
+        <input type="text" name="lastactionwidate" id="lastactionwidate">
+        <input type="text" name="billurl" id="billurl">
+        <input type="text" name="TYPE" value="3">
     </form>
 
 </div>
@@ -328,7 +360,28 @@ endif; ?>
             $billid = $res->results[$i]->bill_id;
             $shorttitle = $res->results[$i]->short_title;
             $chamber = $res->results[$i]->chamber;
-            echo "<tr><td>$billid</td><td>$shorttitle</td><td>$chamber</td><td><a href=''>View Details</a></td></tr>";
+            $title=$res->results[$i]->sponsor->title;
+            $firstname=$res->results[$i]->sponsor->first_name;
+            $lastname=$res->results[$i]->sponsor->last_name;
+            $sponser=$title." ".$firstname." ".$lastname;
+            $Intron=$res->results[$i]->introduced_on;
+            $versionname=$res->results[$i]->last_version->version_name;
+            $lastacat=$res->results[$i]->last_action_at;
+            $lastactionwidate=$versionname.', '.$lastacat;
+            $billurl=$res->results[$i]->last_version->urls->pdf;
+//
+//            echo $billid;
+//            echo "<BR>";
+//            echo $shorttitle;
+//            echo "<BR>";
+//            echo $sponser;
+//            echo "<BR>";
+//            echo $Intron;
+//            echo "<BR>";
+//            echo $lastactionwidate;
+//            echo "<BR>";
+//            echo $billurl;
+            echo "<tr><td>$billid</td><td>$shorttitle</td><td>$chamber</td><td><a href = \"javascript:billdetail('$billid', '$shorttitle', '$sponser','$Intron','$lastactionwidate','$billurl');\">View Details</a></td></tr>";
         }
         echo "</table>";
     }
@@ -391,6 +444,21 @@ endif; ?>
 <tr><td>Term Ends on</td><td>$termend</td></tr><tr><td>Website</td><td><a href=\"$website\">$website</a></td></tr>
 <tr><td>Office</td><td>$office</td></tr><tr><td>Facebook</td><td><a href=\"$fblink\">$linkname</a></td></tr> 
         <tr><td>Twitter</td><td><a href=\"$twlink\">$linkname</a></td></tr></table>";
+endif; ?>
+
+<?php if (isset($_POST["TYPE"]) && $_POST["TYPE"] == 3):
+    $billid = $_POST["billid"];
+    $shorttitle = $_POST["shorttitle"];
+    $sponser = $_POST["sponser"];
+    $Intron = $_POST["Intron"];
+    $lastactionwidate = $_POST["lastactionwidate"];
+    $billurl = $_POST["billurl"];
+
+
+    echo "<table id='biodetail' align='center'><tr><td>Bill ID</td><td>$billid</td></tr>
+<tr><td>Bill Title</td><td>$shorttitle</td></tr><tr><td>Sponsor</td><td>$sponser</td></tr>
+<tr><td>Introduced On</td><td>$Intron</td></tr><tr><td>Last action with date</td><td>$lastactionwidate</td></tr>
+        <tr><td>Bill URL</td><td><a href=\"$billurl\">$shorttitle</a></td></tr></table>";
 endif; ?>
 </body>
 </html>
