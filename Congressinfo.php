@@ -196,12 +196,14 @@ endif;
             </table>
             <a href="http://sunlightfoundation.com/">Powered by Sunlight Fundation</a>
         </div>
+        <input style="display: none" type="text" name="TYPE" value="1">
 
     </form>
 
 <form style="display: none" action="<?php echo $_SERVER["PHP_SELF"]; ?>" id="detailinfo" method="POST">
     <input type="text" name="bioid" id="bioid">
     <input type="text" name="biostate" id="biostate">
+    <input style="display: none" type="text" name="TYPE" value="2">
     </form>
 
 </div>
@@ -319,5 +321,12 @@ endif; ?>
 
 
 endif; ?>
+
+
+<?php if($_POST["TYPE"]==2):
+
+echo "Gone";
+
+ endif;?>
 </body>
 </html>
