@@ -1,9 +1,10 @@
 <html>
 <head>
     <style>
-        body{
+        body {
             font-family: "Times New Roman";
         }
+
         td {
             text-align: center;
         }
@@ -26,6 +27,16 @@
             display: inline-block;
             padding: 5px;
         }
+
+        #biodetail{
+            border: 2px solid;
+            padding: 25px 300px;
+
+        }
+
+        /*#biodetail td{*/
+            /*text-align: left;*/
+        /*}*/
     </style>
 </head>
 <body>
@@ -84,7 +95,7 @@ $state['wisconsin'] = "WI";
 $state['wyoming'] = "WY";
 $PREFIX = 'https://congress.api.sunlightfoundation.com/';
 
-if ($_SERVER["REQUEST_METHOD"] == "POST"):
+if (isset($_POST["TYPE"]) && $_POST["TYPE"] == 1):
     $database = $_POST["Database"];
     $chamber = $_POST["Chamber"];
     $keyword = $_POST["Keyword"];
@@ -110,19 +121,16 @@ endif;
 
 
     function formcheck() {
-        if (document.getElementById("db").value == "noinput"&&document.getElementById("kys").value == "")
-        {
+        if (document.getElementById("db").value == "noinput" && document.getElementById("kys").value == "") {
             alert("Please enter the following missing information: Congress database, Keyword");
             return false;
         }
 
-        else if (document.getElementById("db").value == "noinput")
-        {
+        else if (document.getElementById("db").value == "noinput") {
             alert("Please enter the following missing information: Congress database");
             return false;
         }
-        else if(document.getElementById("kys").value == "")
-        {
+        else if (document.getElementById("kys").value == "") {
             alert("Please enter the following missing information: Keyword");
             return false;
         }
@@ -131,12 +139,15 @@ endif;
         }
     }
 
-    function detail(bioid,state) {
-        var formbioid=document.getElementById("bioid");
-        formbioid.value=bioid;
+    function detail(biochamber, bioid, state) {
+        var formbioid = document.getElementById("bioid");
+        formbioid.value = bioid;
 
-        var formstate=document.getElementById("biostate");
-        formstate.value=state;
+        var formstate = document.getElementById("biostate");
+        formstate.value = state;
+
+        var formchamber = document.getElementById("biochamber");
+        formchamber.value = biochamber;
 
         document.getElementById('detailinfo').submit();
 
@@ -146,7 +157,7 @@ endif;
 </script>
 <div align="center">
     <h2>Congrss Information Search</h2>
-    <form action="<?php echo $_SERVER["PHP_SELF"]; ?>" id="congressinfo" method="POST" onsubmit="return formcheck();" >
+    <form action="<?php echo $_SERVER["PHP_SELF"]; ?>" id="congressinfo" method="POST" onsubmit="return formcheck();">
         <div id="init">
             <table border="0">
                 <tr>
@@ -200,10 +211,11 @@ endif;
 
     </form>
 
-<form style="display: none" action="<?php echo $_SERVER["PHP_SELF"]; ?>" id="detailinfo" method="POST">
-    <input type="text" name="bioid" id="bioid">
-    <input type="text" name="biostate" id="biostate">
-    <input style="display: none" type="text" name="TYPE" value="2">
+    <form style="display: none" action="<?php echo $_SERVER["PHP_SELF"]; ?>" id="detailinfo" method="POST">
+        <input type="text" name="bioid" id="bioid">
+        <input type="text" name="biostate" id="biostate">
+        <input type="text" name="biochamber" id="biochamber">
+        <input style="display: none" type="text" name="TYPE" value="2">
     </form>
 
 </div>
@@ -228,11 +240,12 @@ endif;
 
         echo "<table class='tab' align='center'><tr><th><strong>Name</strong></th><th><strong>State</strong></th><th><strong>Chamber</strong></th><th><strong>Detail</strong></th></tr> ";
         for ($i = 0; $i < $cout; $i++) {
-            $name = $res->results[$i]->first_name . " " . $res->results[$i]->middle_name . " " . $res->results[$i]->last_name;
+            $name = $res->results[$i]->first_name . " " . $res->results[$i]->last_name;
             $state = $res->results[$i]->state_name;
             $chamber = $res->results[$i]->chamber;
             $bioid = $res->results[$i]->bioguide_id;
-            echo "<tr><td>$name</td><td>$state</td><td>$chamber</td><td><a href = \"javascript:detail('$bioid','$state');\">View Details</a></td></tr>";
+            $state2 = $res->results[$i]->state;
+            echo "<tr><td>$name</td><td>$state</td><td>$chamber</td><td><a href = \"javascript:detail('$chamber','$bioid','$state2');\">View Details</a></td></tr>";
         }
         echo "</table>";
     } else {
@@ -323,10 +336,36 @@ endif; ?>
 endif; ?>
 
 
-<?php if($_POST["TYPE"]==2):
+<?php if (isset($_POST["TYPE"]) && $_POST["TYPE"] == 2):
+    $biochamber = $_POST["biochamber"];
+    $bioid = $_POST["bioid"];
+    $biostate = $_POST["biostate"];
 
-echo "Gone";
+    $context = 'legislators?chamber=' . $biochamber . '&state=' . $biostate . "&bioguide_id=" . $bioid . '&apikey=4acd972a599843bd93ea4dba171a483f';
+    $url = $PREFIX . $context;
 
- endif;?>
+    $html = file_get_contents($url);
+    $res = json_decode($html);
+
+    $bioguide_id = $res->results[0]->bioguide_id;
+    $name = $res->results[0]->title . " " . $res->results[0]->first_name . " " . $res->results[0]->last_name;
+    $linkname=$res->results[0]->first_name . " " . $res->results[0]->last_name;
+    $termend = $res->results[0]->term_end;
+    $website = $res->results[0]->website;
+    $office = $res->results[0]->office;
+    $fbid = $res->results[0]->facebook_id;
+    $twid = $res->results[0]->twitter_id;
+
+
+    $photo = 'https://theunitedstates.io/images/congress/225x275/' . $bioguide_id . '.jpg';
+    $fblink = 'https://www.facebook.com/' . $fbid;
+    $twlink = 'https://twitter.com/' . $twid;
+
+
+    echo "<table id='biodetail' align='center'> <tr><td colspan='2'><img src=\"$photo\"></td></tr><tr><td>Full Name</td><td>$name</td></tr>
+<tr><td>Term Ends on</td><td>$termend</td></tr><tr><td>Website</td><td><a href=\"$website\">$website</a></td></tr>
+<tr><td>Office</td><td>$office</td></tr><tr><td>Facebook</td><td><a href=\"$fblink\">$linkname</a></td></tr> 
+        <tr><td>Twitter</td><td><a href=\"$twlink\">$linkname</a></td></tr></table>";
+endif; ?>
 </body>
 </html>
