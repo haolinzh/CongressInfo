@@ -9,6 +9,10 @@
             text-align: center;
         }
 
+        h3{
+            text-align: center;
+        }
+
         .tab {
             border: 2px solid;
             border-collapse: collapse;
@@ -28,14 +32,15 @@
             padding: 5px;
         }
 
-        #biodetail{
+        #biodetail {
             border: 2px solid;
             padding: 25px 300px;
 
         }
 
+
         /*#biodetail td{*/
-            /*text-align: left;*/
+        /*text-align: left;*/
         /*}*/
     </style>
 </head>
@@ -139,7 +144,7 @@ endif;
         }
     }
 
-    function detail(biochamber, bioid, state) {
+    function biodetail(biochamber, bioid, state) {
         var formbioid = document.getElementById("bioid");
         formbioid.value = bioid;
 
@@ -238,16 +243,20 @@ endif;
         echo "<br>";
         $cout = count($res->results);
 
-        echo "<table class='tab' align='center'><tr><th><strong>Name</strong></th><th><strong>State</strong></th><th><strong>Chamber</strong></th><th><strong>Detail</strong></th></tr> ";
-        for ($i = 0; $i < $cout; $i++) {
-            $name = $res->results[$i]->first_name . " " . $res->results[$i]->last_name;
-            $state = $res->results[$i]->state_name;
-            $chamber = $res->results[$i]->chamber;
-            $bioid = $res->results[$i]->bioguide_id;
-            $state2 = $res->results[$i]->state;
-            echo "<tr><td>$name</td><td>$state</td><td>$chamber</td><td><a href = \"javascript:detail('$chamber','$bioid','$state2');\">View Details</a></td></tr>";
+        if ($cout == 0) {
+            echo "<h3>The API returned zero results for the request.</h3>";
+        } else {
+            echo "<table class='tab' align='center'><tr><th><strong>Name</strong></th><th><strong>State</strong></th><th><strong>Chamber</strong></th><th><strong>Detail</strong></th></tr> ";
+            for ($i = 0; $i < $cout; $i++) {
+                $name = $res->results[$i]->first_name . " " . $res->results[$i]->last_name;
+                $state = $res->results[$i]->state_name;
+                $chamber = $res->results[$i]->chamber;
+                $bioid = $res->results[$i]->bioguide_id;
+                $state2 = $res->results[$i]->state;
+                echo "<tr><td>$name</td><td>$state</td><td>$chamber</td><td><a href = \"javascript:biodetail('$chamber','$bioid','$state2');\">View Details</a></td></tr>";
+            }
+            echo "</table>";
         }
-        echo "</table>";
     } else {
         $context = $database . '?chamber=' . $chamber . '&query=' . $keyword . '&apikey=4acd972a599843bd93ea4dba171a483f';
         $url = $PREFIX . $context;
@@ -257,16 +266,23 @@ endif;
 
         echo "<br>";
         $cout = count($res->results);
+        if ($cout == 0) {
+            echo "<h3>The API returned zero results for the request.</h3>";
+        } else {
 
-        echo "<table class='tab' align='center'><tr><th><strong>Name</strong></th><th><strong>State</strong></th><th><strong>Chamber</strong></th><th><strong>Detail</strong></th></tr> ";
-        for ($i = 0; $i < $cout; $i++) {
-            $name = $res->results[$i]->first_name . " " . $res->results[$i]->middle_name . " " . $res->results[$i]->last_name;
-            $state = $res->results[$i]->state_name;
-            $chamber = $res->results[$i]->chamber;
-            echo "<tr><td>$name</td><td>$state</td><td>$chamber</td><td><a href=''>View Details</a></td></tr>";
+            echo "<table class='tab' align='center'><tr><th><strong>Name</strong></th><th><strong>State</strong></th><th><strong>Chamber</strong></th><th><strong>Detail</strong></th></tr> ";
+            for ($i = 0; $i < $cout; $i++) {
+                $name = $res->results[$i]->first_name . " " . $res->results[$i]->last_name;
+                $state = $res->results[$i]->state_name;
+                $chamber = $res->results[$i]->chamber;
+                $bioid = $res->results[$i]->bioguide_id;
+                $state2 = $res->results[$i]->state;
+                echo "<tr><td>$name</td><td>$state</td><td>$chamber</td><td><a href = \"javascript:biodetail('$chamber', '$bioid', '$state2');\">View Details</a></td></tr>";
+            }
+            echo "</table>";
         }
-        echo "</table>";
     }
+
 
 endif; ?>
 
@@ -279,16 +295,19 @@ endif; ?>
     $res = json_decode($html);
 
     $cout = count($res->results);
+    if ($cout == 0) {
+        echo "<h3>The API returned zero results for the request.</h3>";
+    } else {
 
-    echo "<table  class='tab' align='center'><tr><th><strong>Committee ID</strong>></th><th><strong>Committee Name</strong></th><th><strong>Chamber</strong></th></tr> ";
-    for ($i = 0; $i < $cout; $i++) {
-        $committeeid = $res->results[$i]->committee_id;
-        $committeename = $res->results[$i]->name;
-        $chamber = $res->results[$i]->chamber;
-        echo "<tr><td>$committeeid </td><td>$committeename</td><td>$chamber </td></tr>";
+        echo "<table  class='tab' align='center'><tr><th><strong>Committee ID</strong>></th><th><strong>Committee Name</strong></th><th><strong>Chamber</strong></th></tr> ";
+        for ($i = 0; $i < $cout; $i++) {
+            $committeeid = $res->results[$i]->committee_id;
+            $committeename = $res->results[$i]->name;
+            $chamber = $res->results[$i]->chamber;
+            echo "<tr><td>$committeeid </td><td>$committeename</td><td>$chamber </td></tr>";
+        }
+        echo "</table>";
     }
-    echo "</table>";
-
 
 endif; ?>
 
@@ -300,16 +319,19 @@ endif; ?>
     $html = file_get_contents($url);
     $res = json_decode($html);
     $cout = count($res->results);
+    if ($cout == 0) {
+        echo "<h3>The API returned zero results for the request.</h3>";
+    } else {
 
-    echo "<table class='tab' align='center'><tr><th><strong>Bill ID</strong></th><th><strong>Short Title</strong></th><th><strong>Chamber/strong></th><th><strong>View Detail</strong></th></tr> ";
-    for ($i = 0; $i < $cout; $i++) {
-        $billid = $res->results[$i]->bill_id;
-        $shorttitle = $res->results[$i]->short_title;
-        $chamber = $res->results[$i]->chamber;
-        echo "<tr><td>$billid</td><td>$shorttitle</td><td>$chamber</td><td><a href=''>View Details</a></td></tr>";
+        echo "<table class='tab' align='center'><tr><th><strong>Bill ID</strong></th><th><strong>Short Title</strong></th><th><strong>Chamber/strong></th><th><strong>View Detail</strong></th></tr> ";
+        for ($i = 0; $i < $cout; $i++) {
+            $billid = $res->results[$i]->bill_id;
+            $shorttitle = $res->results[$i]->short_title;
+            $chamber = $res->results[$i]->chamber;
+            echo "<tr><td>$billid</td><td>$shorttitle</td><td>$chamber</td><td><a href=''>View Details</a></td></tr>";
+        }
+        echo "</table>";
     }
-    echo "</table>";
-
 
 endif; ?>
 
@@ -321,18 +343,21 @@ endif; ?>
     $html = file_get_contents($url);
     $res = json_decode($html);
     $cout = count($res->results);
+    if ($cout == 0) {
+        echo "<h3>The API returned zero results for the request.</h3>";
+    } else {
 
-    echo "<table  class='tab' align='center'><tr><th>Amendment ID</th><th>Amendment Type</th><th>Chamber</th><th>Introduced on</th></tr> ";
-    for ($i = 0; $i < $cout; $i++) {
-        $amid = $res->results[$i]->amendment_id;
-        $amtype = $res->results[$i]->amendment_type;
-        $chamber = $res->results[$i]->chamber;
-        $intro = $res->results[$i]->introduced_on;
-        echo "<tr><td>$amid</td><td>$amtype</td><td>$chamber</td><td>$intro</td></tr>";
+        echo "<table  class='tab' align='center'><tr><th>Amendment ID</th><th>Amendment Type</th><th>Chamber</th><th>Introduced on</th></tr> ";
+        for ($i = 0; $i < $cout; $i++) {
+            $amid = $res->results[$i]->amendment_id;
+            $amtype = $res->results[$i]->amendment_type;
+            $chamber = $res->results[$i]->chamber;
+            $intro = $res->results[$i]->introduced_on;
+            echo "<tr><td>$amid</td><td>$amtype</td><td>$chamber</td><td>$intro</td></tr>";
+        }
+        echo "</table>";
+
     }
-    echo "</table>";
-
-
 endif; ?>
 
 
@@ -349,7 +374,7 @@ endif; ?>
 
     $bioguide_id = $res->results[0]->bioguide_id;
     $name = $res->results[0]->title . " " . $res->results[0]->first_name . " " . $res->results[0]->last_name;
-    $linkname=$res->results[0]->first_name . " " . $res->results[0]->last_name;
+    $linkname = $res->results[0]->first_name . " " . $res->results[0]->last_name;
     $termend = $res->results[0]->term_end;
     $website = $res->results[0]->website;
     $office = $res->results[0]->office;
