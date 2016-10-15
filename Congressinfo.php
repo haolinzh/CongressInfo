@@ -9,7 +9,7 @@
             text-align: center;
         }
 
-        h3{
+        h3 {
             text-align: center;
         }
 
@@ -37,7 +37,6 @@
             padding: 25px 300px;
 
         }
-
 
         /*#biodetail td{*/
         /*text-align: left;*/
@@ -100,13 +99,23 @@ $state['wisconsin'] = "WI";
 $state['wyoming'] = "WY";
 $PREFIX = 'https://congress.api.sunlightfoundation.com/';
 
-if (isset($_POST["TYPE"]) && $_POST["TYPE"] == 1):
+$map[''] = "keyword*";
+$map['legislators'] = "State/Representative*";
+$map['committees'] = "Committee ID*";
+$map['bills'] = "Bill ID*";
+$map['amendments'] = "Amendment ID*";
+
+if (isset($_POST["TYPE"])):
     $database = $_POST["Database"];
     $chamber = $_POST["Chamber"];
     $keyword = $_POST["Keyword"];
-    $submit = $_POST["submit"];
-
 endif;
+
+//if (isset($_POST["TYPE"]) && $_POST["TYPE"] == 1):
+//
+//    $submit = $_POST["submit"];
+
+//endif;
 ?>
 <script type="text/javascript">
     function oc() {
@@ -144,7 +153,7 @@ endif;
         }
     }
 
-    function biodetail(biochamber, bioid, state) {
+    function biodetail(biochamber, bioid, state, database, keyword) {
         var formbioid = document.getElementById("bioid");
         formbioid.value = bioid;
 
@@ -154,11 +163,17 @@ endif;
         var formchamber = document.getElementById("biochamber");
         formchamber.value = biochamber;
 
+        var formdb = document.getElementById("biodatabase");
+        formdb.value = database;
+
+        var formky = document.getElementById("biokeyword");
+        formky.value = keyword;
+
         document.getElementById('detailinfo').submit();
 
     }
 
-    function billdetail(billid,shorttitle,sponser,Intron,lastactionwidate,billurl) {
+    function billdetail(billid, shorttitle, sponser, Intron, lastactionwidate, billurl, database, chamber, keyword) {
         var formbillid = document.getElementById("billid");
         formbillid.value = billid;
 
@@ -175,8 +190,17 @@ endif;
         formLAWD.value = lastactionwidate;
 
         var formbillurl = document.getElementById("billurl");
-        formbillurl.value = billurl
-        ;
+        formbillurl.value = billurl;
+
+        var formchamber = document.getElementById("billchamber");
+        formchamber.value = chamber;
+
+        var formdb = document.getElementById("billdatabase");
+        formdb.value = database;
+
+        var formky = document.getElementById("billkeyword");
+        formky.value = keyword;
+
         document.getElementById('billinfo').submit();
     }
 
@@ -220,7 +244,7 @@ endif;
                     </td>
                 </tr>
                 <tr>
-                    <td id="ky">Keywords</td>
+                    <td id="ky"><?php echo $map[$database] ?></td>
                     <td><input type="text" id="kys" name="Keyword" value="<?php echo
                         $keyword; ?>"></td>
                 </tr>
@@ -232,7 +256,7 @@ endif;
                     </td>
                 </tr>
             </table>
-            <a href="http://sunlightfoundation.com/">Powered by Sunlight Fundation</a>
+            <a href="http://sunlightfoundation.com/" target="_blank">Powered by Sunlight Foundation</a>
         </div>
         <input style="display: none" type="text" name="TYPE" value="1">
 
@@ -241,7 +265,9 @@ endif;
     <form style="display: none" action="<?php echo $_SERVER["PHP_SELF"]; ?>" id="detailinfo" method="POST">
         <input type="text" name="bioid" id="bioid">
         <input type="text" name="biostate" id="biostate">
-        <input type="text" name="biochamber" id="biochamber">
+        <input type="text" name="Chamber" id="biochamber">
+        <input type="text" name="Database" id="biodatabase">
+        <input type="text" name="Keyword" id="biokeyword">
         <input type="text" name="TYPE" value="2">
     </form>
 
@@ -252,13 +278,16 @@ endif;
         <input type="text" name="Intron" id="Intron">
         <input type="text" name="lastactionwidate" id="lastactionwidate">
         <input type="text" name="billurl" id="billurl">
+        <input type="text" name="Chamber" id="billchamber">
+        <input type="text" name="Database" id="billdatabase">
+        <input type="text" name="Keyword" id="billkeyword">
         <input type="text" name="TYPE" value="3">
     </form>
 
 </div>
 
 
-<?php if ($database == "legislators"):
+<?php if ((isset($_POST["TYPE"]) && $_POST["TYPE"] == 1) && $database == "legislators"):
     $lkeyword = strtolower($keyword);
     $keyinstate = array_keys($state);
 
@@ -285,7 +314,7 @@ endif;
                 $chamber = $res->results[$i]->chamber;
                 $bioid = $res->results[$i]->bioguide_id;
                 $state2 = $res->results[$i]->state;
-                echo "<tr><td>$name</td><td>$state</td><td>$chamber</td><td><a href = \"javascript:biodetail('$chamber','$bioid','$state2');\">View Details</a></td></tr>";
+                echo "<tr><td>$name</td><td>$state</td><td>$chamber</td><td><a href = \"javascript:biodetail('$chamber','$bioid','$state2','$database','$keyword');\">View Details</a></td></tr>";
             }
             echo "</table>";
         }
@@ -309,7 +338,7 @@ endif;
                 $chamber = $res->results[$i]->chamber;
                 $bioid = $res->results[$i]->bioguide_id;
                 $state2 = $res->results[$i]->state;
-                echo "<tr><td>$name</td><td>$state</td><td>$chamber</td><td><a href = \"javascript:biodetail('$chamber', '$bioid', '$state2');\">View Details</a></td></tr>";
+                echo "<tr><td>$name</td><td>$state</td><td>$chamber</td><td><a href = \"javascript:biodetail('$chamber','$bioid','$state2','$database','$keyword');\">View Details</a></td></tr>";
             }
             echo "</table>";
         }
@@ -318,7 +347,7 @@ endif;
 
 endif; ?>
 
-<?php if ($database == "committees"):
+<?php if ((isset($_POST["TYPE"]) && $_POST["TYPE"] == 1) && $database == "committees"):
 
     $context = $database . '?committee_id=' . $keyword . '&chamber=' . $chamber . '&apikey=4acd972a599843bd93ea4dba171a483f';
     $url = $PREFIX . $context;
@@ -343,7 +372,7 @@ endif; ?>
 
 endif; ?>
 
-<?php if ($database == "bills"):
+<?php if ((isset($_POST["TYPE"]) && $_POST["TYPE"] == 1) && $database == "bills"):
     $context = $database . '?bill_id=' . $keyword . '&chamber=' . $chamber . '&apikey=4acd972a599843bd93ea4dba171a483f';
     $url = $PREFIX . $context;
 
@@ -355,40 +384,30 @@ endif; ?>
         echo "<h3>The API returned zero results for the request.</h3>";
     } else {
 
-        echo "<table class='tab' align='center'><tr><th><strong>Bill ID</strong></th><th><strong>Short Title</strong></th><th><strong>Chamber/strong></th><th><strong>View Detail</strong></th></tr> ";
+        echo "<table class='tab' align='center'><tr><th><strong>Bill ID</strong></th><th><strong>Short Title</strong></th><th><strong>Chamber</strong></th><th><strong>View Detail</strong></th></tr> ";
         for ($i = 0; $i < $cout; $i++) {
             $billid = $res->results[$i]->bill_id;
             $shorttitle = $res->results[$i]->short_title;
             $chamber = $res->results[$i]->chamber;
-            $title=$res->results[$i]->sponsor->title;
-            $firstname=$res->results[$i]->sponsor->first_name;
-            $lastname=$res->results[$i]->sponsor->last_name;
-            $sponser=$title." ".$firstname." ".$lastname;
-            $Intron=$res->results[$i]->introduced_on;
-            $versionname=$res->results[$i]->last_version->version_name;
-            $lastacat=$res->results[$i]->last_action_at;
-            $lastactionwidate=$versionname.', '.$lastacat;
-            $billurl=$res->results[$i]->last_version->urls->pdf;
-//
-//            echo $billid;
-//            echo "<BR>";
-//            echo $shorttitle;
-//            echo "<BR>";
-//            echo $sponser;
-//            echo "<BR>";
-//            echo $Intron;
-//            echo "<BR>";
-//            echo $lastactionwidate;
-//            echo "<BR>";
-//            echo $billurl;
-            echo "<tr><td>$billid</td><td>$shorttitle</td><td>$chamber</td><td><a href = \"javascript:billdetail('$billid', '$shorttitle', '$sponser','$Intron','$lastactionwidate','$billurl');\">View Details</a></td></tr>";
+            $title = $res->results[$i]->sponsor->title;
+            $firstname = $res->results[$i]->sponsor->first_name;
+            $lastname = $res->results[$i]->sponsor->last_name;
+            $sponser = $title . " " . $firstname . " " . $lastname;
+            $Intron = $res->results[$i]->introduced_on;
+            $versionname = $res->results[$i]->last_version->version_name;
+            $lastacat = $res->results[$i]->last_action_at;
+            $lastactionwidate = $versionname . ', ' . $lastacat;
+            $billurl = $res->results[$i]->last_version->urls->pdf;
+
+            echo "<tr><td>$billid</td><td>$shorttitle</td><td>$chamber</td><td><a href = \"javascript:billdetail('$billid', '$shorttitle',
+ '$sponser','$Intron','$lastactionwidate','$billurl','$database','$chamber','$keyword');\">View Details</a></td></tr>";
         }
         echo "</table>";
     }
 
 endif; ?>
 
-<?php if ($database == "amendments"):
+<?php if ((isset($_POST["TYPE"]) && $_POST["TYPE"] == 1) && $database == "amendments"):
 
     $context = $database . '?amendment_id=' . $keyword . '&chamber=' . $chamber . '&apikey=4acd972a599843bd93ea4dba171a483f';
     $url = $PREFIX . $context;
@@ -441,9 +460,9 @@ endif; ?>
 
 
     echo "<table id='biodetail' align='center'> <tr><td colspan='2'><img src=\"$photo\"></td></tr><tr><td>Full Name</td><td>$name</td></tr>
-<tr><td>Term Ends on</td><td>$termend</td></tr><tr><td>Website</td><td><a href=\"$website\">$website</a></td></tr>
-<tr><td>Office</td><td>$office</td></tr><tr><td>Facebook</td><td><a href=\"$fblink\">$linkname</a></td></tr> 
-        <tr><td>Twitter</td><td><a href=\"$twlink\">$linkname</a></td></tr></table>";
+<tr><td>Term Ends on</td><td>$termend</td></tr><tr><td>Website</td><td><a href=\"$website\" target=\"_blank\">$website</a></td></tr>
+<tr><td>Office</td><td>$office</td></tr><tr><td>Facebook</td><td><a href=\"$fblink\" target=\"_blank\">$linkname</a></td></tr> 
+        <tr><td>Twitter</td><td><a href=\"$twlink\" target=\"_blank\">$linkname</a></td></tr></table>";
 endif; ?>
 
 <?php if (isset($_POST["TYPE"]) && $_POST["TYPE"] == 3):
@@ -458,7 +477,7 @@ endif; ?>
     echo "<table id='biodetail' align='center'><tr><td>Bill ID</td><td>$billid</td></tr>
 <tr><td>Bill Title</td><td>$shorttitle</td></tr><tr><td>Sponsor</td><td>$sponser</td></tr>
 <tr><td>Introduced On</td><td>$Intron</td></tr><tr><td>Last action with date</td><td>$lastactionwidate</td></tr>
-        <tr><td>Bill URL</td><td><a href=\"$billurl\">$shorttitle</a></td></tr></table>";
+        <tr><td>Bill URL</td><td><a href=\"$billurl\" target=\"_blank\">$shorttitle</a></td></tr></table>";
 endif; ?>
 </body>
 </html>
