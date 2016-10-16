@@ -370,7 +370,7 @@ endif;
 
             $context = $database . '?chamber=' . $chamber . '&first_name=' . $firstname . '&last_name=' . $lastname. '&apikey=4acd972a599843bd93ea4dba171a483f';
             $url = $PREFIX . $context;
-            
+
             $html = file_get_contents($url);
             $res = json_decode($html);
 
@@ -414,7 +414,7 @@ endif; ?>
         echo "<h3>The API returned zero results for the request.</h3>";
     } else {
 
-        echo "<table  class='tab' align='center'><tr><th><strong>Committee ID</strong>></th><th><strong>Committee Name</strong></th><th><strong>Chamber</strong></th></tr> ";
+        echo "<table  class='tab' align='center'><tr><th><strong>Committee ID</strong></th><th><strong>Committee Name</strong></th><th><strong>Chamber</strong></th></tr> ";
         for ($i = 0; $i < $cout; $i++) {
             $committeeid = $res->results[$i]->committee_id;
             $committeename = $res->results[$i]->name;
