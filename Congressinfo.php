@@ -33,28 +33,28 @@
             padding: 5px;
         }
 
-        #biotable ,#billtable {
+        #biotable, #billtable {
             border: 2px solid;
             padding: 25px 100px;
 
         }
 
-        #biotable .left{
+        #biotable .left {
             text-align: left;
             padding-left: 50px;
         }
 
-        #biotable .right{
+        #biotable .right {
             text-align: left;
             padding-left: 200px;
         }
 
-        #billtable .left{
+        #billtable .left {
             text-align: left;
             padding-left: 50px;
         }
 
-        #billtable .right{
+        #billtable .right {
             text-align: left;
             padding-left: 50px;
         }
@@ -335,28 +335,68 @@ endif;
             echo "</table>";
         }
     } else {
-        $context = $database . '?chamber=' . $chamber . '&query=' . $keyword . '&apikey=4acd972a599843bd93ea4dba171a483f';
-        $url = $PREFIX . $context;
+        $splname = explode(" ", $keyword);
 
-        $html = file_get_contents($url);
-        $res = json_decode($html);
 
-        echo "<br>";
-        $cout = count($res->results);
-        if ($cout == 0) {
-            echo "<h3>The API returned zero results for the request.</h3>";
-        } else {
+        if (sizeof($splname) == 1) {
+            $context = $database . '?chamber=' . $chamber . '&query=' . $keyword . '&apikey=4acd972a599843bd93ea4dba171a483f';
+            $url = $PREFIX . $context;
 
-            echo "<table class='tab' align='center'><tr><th><strong>Name</strong></th><th><strong>State</strong></th><th><strong>Chamber</strong></th><th><strong>Detail</strong></th></tr> ";
-            for ($i = 0; $i < $cout; $i++) {
-                $name = $res->results[$i]->first_name . " " . $res->results[$i]->last_name;
-                $state = $res->results[$i]->state_name;
-                $chamber = $res->results[$i]->chamber;
-                $bioid = $res->results[$i]->bioguide_id;
-                $state2 = $res->results[$i]->state;
-                echo "<tr><td>$name</td><td>$state</td><td>$chamber</td><td><a href = \"javascript:biodetail('$chamber','$bioid','$state2','$database','$keyword');\">View Details</a></td></tr>";
+
+            echo $url;
+            $html = file_get_contents($url);
+            $res = json_decode($html);
+
+            echo "<br>";
+            $cout = count($res->results);
+            if ($cout == 0) {
+                echo "<h3>The API returned zero results for the request.</h3>";
+            } else {
+
+                echo "<table class='tab' align='center'><tr><th><strong>Name</strong></th><th><strong>State</strong></th><th><strong>Chamber</strong></th><th><strong>Detail</strong></th></tr> ";
+                for ($i = 0; $i < $cout; $i++) {
+                    $name = $res->results[$i]->first_name . " " . $res->results[$i]->last_name;
+                    $state = $res->results[$i]->state_name;
+                    $chamber = $res->results[$i]->chamber;
+                    $bioid = $res->results[$i]->bioguide_id;
+                    $state2 = $res->results[$i]->state;
+                    echo "<tr><td>$name</td><td>$state</td><td>$chamber</td><td><a href = \"javascript:biodetail('$chamber','$bioid','$state2','$database','$keyword');\">View Details</a></td></tr>";
+                }
+                echo "</table>";
             }
-            echo "</table>";
+        }
+        elseif (sizeof($splname) == 2){
+            $firstname=$splname[0];
+            $lastname=$splname[1];
+
+            $context = $database . '?chamber=' . $chamber . '&first_name=' . $firstname . '&last_name=' . $lastname. '&apikey=4acd972a599843bd93ea4dba171a483f';
+            $url = $PREFIX . $context;
+
+            echo $url;
+            $html = file_get_contents($url);
+            $res = json_decode($html);
+
+            echo "<br>";
+            $cout = count($res->results);
+            if ($cout == 0) {
+                echo "<h3>The API returned zero results for the request.</h3>";
+            } else {
+
+                echo "<table class='tab' align='center'><tr><th><strong>Name</strong></th><th><strong>State</strong></th><th><strong>Chamber</strong></th><th><strong>Detail</strong></th></tr> ";
+                for ($i = 0; $i < $cout; $i++) {
+                    $name = $res->results[$i]->first_name . " " . $res->results[$i]->last_name;
+                    $state = $res->results[$i]->state_name;
+                    $chamber = $res->results[$i]->chamber;
+                    $bioid = $res->results[$i]->bioguide_id;
+                    $state2 = $res->results[$i]->state;
+                    echo "<tr><td>$name</td><td>$state</td><td>$chamber</td><td><a href = \"javascript:biodetail('$chamber','$bioid','$state2','$database','$keyword');\">View Details</a></td></tr>";
+                }
+                echo "</table>";
+            }
+        }
+
+        else{
+            echo "You can search by 'state name', 'firstname', 'lastname' or 'firstname and lastname', please retry.";
         }
     }
 
@@ -474,8 +514,8 @@ endif; ?>
     $fblink = 'https://www.facebook.com/' . $fbid;
     $twlink = 'https://twitter.com/' . $twid;
 
-    if($website=="")
-        $website="N.A.";
+    if ($website == "")
+        $website = "N.A.";
 
 
     echo "<table id='biotable' align='center'> <tr><td colspan='2' style='text-align: center'><img src=\"$photo\"></td></tr><tr><td class='left'>Full Name</td><td class='right'>$name</td></tr>
