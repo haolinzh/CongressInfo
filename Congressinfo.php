@@ -33,15 +33,32 @@
             padding: 5px;
         }
 
-        #biodetail {
+        #biotable ,#billtable {
             border: 2px solid;
-            padding: 25px 300px;
+            padding: 25px 100px;
 
         }
 
-        /*#biodetail td{*/
-        /*text-align: left;*/
-        /*}*/
+        #biotable .left{
+            text-align: left;
+            padding-left: 50px;
+        }
+
+        #biotable .right{
+            text-align: left;
+            padding-left: 200px;
+        }
+
+        #billtable .left{
+            text-align: left;
+            padding-left: 50px;
+        }
+
+        #billtable .right{
+            text-align: left;
+            padding-left: 50px;
+        }
+
     </style>
 </head>
 <body>
@@ -457,11 +474,14 @@ endif; ?>
     $fblink = 'https://www.facebook.com/' . $fbid;
     $twlink = 'https://twitter.com/' . $twid;
 
+    if($website=="")
+        $website="N.A.";
 
-    echo "<table id='biodetail' align='center'> <tr><td colspan='2'><img src=\"$photo\"></td></tr><tr><td>Full Name</td><td>$name</td></tr>
-<tr><td>Term Ends on</td><td>$termend</td></tr><tr><td>Website</td><td><a href=\"$website\" target=\"_blank\">$website</a></td></tr>
-<tr><td>Office</td><td>$office</td></tr><tr><td>Facebook</td><td><a href=\"$fblink\" target=\"_blank\">$linkname</a></td></tr> 
-        <tr><td>Twitter</td><td><a href=\"$twlink\" target=\"_blank\">$linkname</a></td></tr></table>";
+
+    echo "<table id='biotable' align='center'> <tr><td colspan='2' style='text-align: center'><img src=\"$photo\"></td></tr><tr><td class='left'>Full Name</td><td class='right'>$name</td></tr>
+<tr><td class='left'>Term Ends on</td><td class='right'>$termend</td></tr><tr><td class='left'>Website</td><td class='right'><a href=\"$website\" target=\"_blank\">$website</a></td></tr>
+<tr><td class='left'>Office</td><td class='right'>$office</td></tr><tr><td class='left'>Facebook</td><td class='right'><a href=\"$fblink\" target=\"_blank\">$linkname</a></td></tr> 
+        <tr><td class='left'>Twitter</td><td class='right'><a href=\"$twlink\" target=\"_blank\">$linkname</a></td></tr></table>";
 endif; ?>
 
 <?php if (isset($_POST["TYPE"]) && $_POST["TYPE"] == 3):
@@ -473,10 +493,10 @@ endif; ?>
     $billurl = $_POST["billurl"];
 
 
-    echo "<table id='biodetail' align='center'><tr><td>Bill ID</td><td>$billid</td></tr>
-<tr><td>Bill Title</td><td>$shorttitle</td></tr><tr><td>Sponsor</td><td>$sponser</td></tr>
-<tr><td>Introduced On</td><td>$Intron</td></tr><tr><td>Last action with date</td><td>$lastactionwidate</td></tr>
-        <tr><td>Bill URL</td><td><a href=\"$billurl\" target=\"_blank\">$shorttitle</a></td></tr></table>";
+    echo "<table id='billtable' align='center'><tr><td class='left'>Bill ID</td><td class='right'>$billid</td></tr>
+<tr><td class='left'>Bill Title</td><td class='right'>$shorttitle</td></tr><tr><td class='left'>Sponsor</td><td class='right'>$sponser</td></tr>
+<tr><td class='left'>Introduced On</td><td class='right'>$Intron</td></tr><tr><td class='left'>Last action with date</td><td class='right'>$lastactionwidate</td></tr>
+        <tr><td class='left'>Bill URL</td><td class='right'><a href=\"$billurl\" target=\"_blank\">$shorttitle</a></td></tr></table>";
 endif; ?>
 </body>
 </html>
