@@ -1,5 +1,6 @@
 <html>
 <head>
+    <title>Forecast</title>
     <style>
         body {
             font-family: "Times New Roman";
@@ -111,11 +112,7 @@ if (isset($_POST["TYPE"])):
     $keyword = $_POST["Keyword"];
 endif;
 
-//if (isset($_POST["TYPE"]) && $_POST["TYPE"] == 1):
-//
-//    $submit = $_POST["submit"];
 
-//endif;
 ?>
 <script type="text/javascript">
     function oc() {
@@ -133,7 +130,9 @@ endif;
         }
     }
 
-
+    function rst() {
+        window.location.assign(window.location.href);
+    }
     function formcheck() {
         if (document.getElementById("db").value == "noinput" && document.getElementById("kys").value == "") {
             alert("Please enter the following missing information: Congress database, Keyword");
@@ -252,7 +251,7 @@ endif;
                     <td></td>
                     <td>
                         <input type="submit" name="submit" value="Search">
-                        <input type="button" value="Reset">
+                        <input type="button" value="Reset" onclick="rst()">
                     </td>
                 </tr>
             </table>
