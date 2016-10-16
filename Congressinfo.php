@@ -343,7 +343,6 @@ endif;
             $url = $PREFIX . $context;
 
 
-            echo $url;
             $html = file_get_contents($url);
             $res = json_decode($html);
 
@@ -371,8 +370,7 @@ endif;
 
             $context = $database . '?chamber=' . $chamber . '&first_name=' . $firstname . '&last_name=' . $lastname. '&apikey=4acd972a599843bd93ea4dba171a483f';
             $url = $PREFIX . $context;
-
-            echo $url;
+            
             $html = file_get_contents($url);
             $res = json_decode($html);
 
