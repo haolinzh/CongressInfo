@@ -115,7 +115,7 @@ $state['washington'] = "WA";
 $state['west virginia'] = "WV";
 $state['wisconsin'] = "WI";
 $state['wyoming'] = "WY";
-$PREFIX = 'https://congress.api.sunlightfoundation.com/';
+$PREFIX = 'http://congress.api.sunlightfoundation.com/';
 
 $map[''] = "keyword*";
 $map['legislators'] = "State/Representative*";
@@ -450,7 +450,7 @@ endif; ?>
 
 
 <?php if (isset($_POST["TYPE"]) && $_POST["TYPE"] == 2):
-    $biochamber = $_POST["biochamber"];
+    $biochamber = $_POST["Chamber"];
     $bioid = $_POST["bioid"];
     $biostate = $_POST["biostate"];
 
