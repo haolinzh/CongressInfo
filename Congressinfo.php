@@ -26,6 +26,9 @@
             padding: 2px 25px;
 
         }
+        .tab td:first-child{
+            text-align: left;
+        }
 
         #init {
             border: 1px solid;
@@ -127,6 +130,7 @@ if (isset($_POST["TYPE"])):
     $database = $_POST["Database"];
     $chamber = $_POST["Chamber"];
     $keyword = $_POST["Keyword"];
+    $keyword=trim($keyword);
 endif;
 
 
