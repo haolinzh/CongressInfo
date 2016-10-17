@@ -456,6 +456,9 @@ endif; ?>
             $lastacat = $res->results[$i]->last_action_at;
             $lastactionwidate = $versionname . ', ' . $lastacat;
             $billurl = $res->results[$i]->last_version->urls->pdf;
+            if($shorttitle=="")
+                $shorttitle="N.A.";
+
 
             echo "<tr><td>$billid</td><td>$shorttitle</td><td>$chamber</td><td><a href = \"javascript:billdetail('$billid', '$shorttitle',
  '$sponser','$Intron','$lastactionwidate','$billurl','$database','$chamber','$keyword');\">View Details</a></td></tr>";
@@ -529,16 +532,18 @@ endif; ?>
 <?php if (isset($_POST["TYPE"]) && $_POST["TYPE"] == 3):
     $billid = $_POST["billid"];
     $shorttitle = $_POST["shorttitle"];
+    $billurltitle=$shorttitle;
     $sponser = $_POST["sponser"];
     $Intron = $_POST["Intron"];
     $lastactionwidate = $_POST["lastactionwidate"];
     $billurl = $_POST["billurl"];
-
+    if ($billurltitle=="N.A.")
+        $billurltitle=$billid;
 
     echo "<table id='billtable' align='center'><tr><td class='left'>Bill ID</td><td class='right'>$billid</td></tr>
 <tr><td class='left'>Bill Title</td><td class='right'>$shorttitle</td></tr><tr><td class='left'>Sponsor</td><td class='right'>$sponser</td></tr>
 <tr><td class='left'>Introduced On</td><td class='right'>$Intron</td></tr><tr><td class='left'>Last action with date</td><td class='right'>$lastactionwidate</td></tr>
-        <tr><td class='left'>Bill URL</td><td class='right'><a href=\"$billurl\" target=\"_blank\">$shorttitle</a></td></tr></table>";
+        <tr><td class='left'>Bill URL</td><td class='right'><a href=\"$billurl\" target=\"_blank\">$billurltitle</a></td></tr></table>";
 endif; ?>
 </body>
 </html>
