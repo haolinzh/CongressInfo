@@ -26,7 +26,8 @@
             padding: 2px 25px;
 
         }
-        .tab td:first-child{
+
+        .tab td:first-child {
             text-align: left;
         }
 
@@ -130,7 +131,7 @@ if (isset($_POST["TYPE"])):
     $database = $_POST["Database"];
     $chamber = $_POST["Chamber"];
     $keyword = $_POST["Keyword"];
-    $keyword=trim($keyword);
+    $keyword = trim($keyword);
 endif;
 
 
@@ -367,12 +368,11 @@ endif;
                 }
                 echo "</table>";
             }
-        }
-        elseif (sizeof($splname) == 2){
-            $firstname=$splname[0];
-            $lastname=$splname[1];
+        } elseif (sizeof($splname) == 2) {
+            $firstname = $splname[0];
+            $lastname = $splname[1];
 
-            $context = $database . '?chamber=' . $chamber . '&first_name=' . $firstname . '&last_name=' . $lastname. '&apikey=4acd972a599843bd93ea4dba171a483f';
+            $context = $database . '?chamber=' . $chamber . '&first_name=' . $firstname . '&last_name=' . $lastname . '&apikey=4acd972a599843bd93ea4dba171a483f';
             $url = $PREFIX . $context;
 
             $html = file_get_contents($url);
@@ -395,9 +395,7 @@ endif;
                 }
                 echo "</table>";
             }
-        }
-
-        else{
+        } else {
             echo "You can search by 'state name', 'firstname', 'lastname' or 'firstname and lastname', please retry.";
         }
     }
@@ -406,7 +404,7 @@ endif;
 endif; ?>
 
 <?php if ((isset($_POST["TYPE"]) && $_POST["TYPE"] == 1) && $database == "committees"):
-    $keyword=strtoupper($keyword);
+    $keyword = strtoupper($keyword);
     $context = $database . '?committee_id=' . $keyword . '&chamber=' . $chamber . '&apikey=4acd972a599843bd93ea4dba171a483f';
     $url = $PREFIX . $context;
 
@@ -431,7 +429,7 @@ endif; ?>
 endif; ?>
 
 <?php if ((isset($_POST["TYPE"]) && $_POST["TYPE"] == 1) && $database == "bills"):
-    $keyword=strtolower($keyword);
+    $keyword = strtolower($keyword);
     $context = $database . '?bill_id=' . $keyword . '&chamber=' . $chamber . '&apikey=4acd972a599843bd93ea4dba171a483f';
     $url = $PREFIX . $context;
 
@@ -457,8 +455,8 @@ endif; ?>
             $lastacat = $res->results[$i]->last_action_at;
             $lastactionwidate = $versionname . ', ' . $lastacat;
             $billurl = $res->results[$i]->last_version->urls->pdf;
-            if($shorttitle=="")
-                $shorttitle="N.A.";
+            if ($shorttitle == "")
+                $shorttitle = "N.A.";
 
 
             echo "<tr><td>$billid</td><td>$shorttitle</td><td>$chamber</td><td><a href = \"javascript:billdetail('$billid', '$shorttitle',
@@ -470,7 +468,7 @@ endif; ?>
 endif; ?>
 
 <?php if ((isset($_POST["TYPE"]) && $_POST["TYPE"] == 1) && $database == "amendments"):
-    $keyword=strtolower($keyword);
+    $keyword = strtolower($keyword);
     $context = $database . '?amendment_id=' . $keyword . '&chamber=' . $chamber . '&apikey=4acd972a599843bd93ea4dba171a483f';
     $url = $PREFIX . $context;
 
@@ -508,7 +506,8 @@ endif; ?>
 
     $bioguide_id = $res->results[0]->bioguide_id;
     $name = $res->results[0]->title . " " . $res->results[0]->first_name . " " . $res->results[0]->last_name;
-    $linkname = $res->results[0]->first_name . " " . $res->results[0]->last_name;
+    $flinkname = $res->results[0]->first_name . " " . $res->results[0]->last_name;
+    $tlinkname = $res->results[0]->first_name . " " . $res->results[0]->last_name;
     $termend = $res->results[0]->term_end;
     $website = $res->results[0]->website;
     $office = $res->results[0]->office;
@@ -517,8 +516,17 @@ endif; ?>
 
 
     $photo = 'https://theunitedstates.io/images/congress/225x275/' . $bioguide_id . '.jpg';
+
+    if ($fbid == "")
+        $flinkname = "N.A.";
+
+    if ($twid == "")
+        $tlinkname = "N.A.";
+
     $fblink = 'https://www.facebook.com/' . $fbid;
+
     $twlink = 'https://twitter.com/' . $twid;
+
 
     if ($website == "")
         $website = "N.A.";
@@ -526,20 +534,20 @@ endif; ?>
 
     echo "<table id='biotable' align='center'> <tr><td colspan='2' style='text-align: center'><img src=\"$photo\"></td></tr><tr><td class='left'>Full Name</td><td class='right'>$name</td></tr>
 <tr><td class='left'>Term Ends on</td><td class='right'>$termend</td></tr><tr><td class='left'>Website</td><td class='right'><a href=\"$website\" target=\"_blank\">$website</a></td></tr>
-<tr><td class='left'>Office</td><td class='right'>$office</td></tr><tr><td class='left'>Facebook</td><td class='right'><a href=\"$fblink\" target=\"_blank\">$linkname</a></td></tr> 
-        <tr><td class='left'>Twitter</td><td class='right'><a href=\"$twlink\" target=\"_blank\">$linkname</a></td></tr></table>";
+<tr><td class='left'>Office</td><td class='right'>$office</td></tr><tr><td class='left'>Facebook</td><td class='right'><a href=\"$fblink\" target=\"_blank\">$flinkname</a></td></tr> 
+        <tr><td class='left'>Twitter</td><td class='right'><a href=\"$twlink\" target=\"_blank\">$tlinkname</a></td></tr></table>";
 endif; ?>
 
 <?php if (isset($_POST["TYPE"]) && $_POST["TYPE"] == 3):
     $billid = $_POST["billid"];
     $shorttitle = $_POST["shorttitle"];
-    $billurltitle=$shorttitle;
+    $billurltitle = $shorttitle;
     $sponser = $_POST["sponser"];
     $Intron = $_POST["Intron"];
     $lastactionwidate = $_POST["lastactionwidate"];
     $billurl = $_POST["billurl"];
-    if ($billurltitle=="N.A.")
-        $billurltitle=$billid;
+    if ($billurltitle == "N.A.")
+        $billurltitle = $billid;
 
     echo "<table id='billtable' align='center'><tr><td class='left'>Bill ID</td><td class='right'>$billid</td></tr>
 <tr><td class='left'>Bill Title</td><td class='right'>$shorttitle</td></tr><tr><td class='left'>Sponsor</td><td class='right'>$sponser</td></tr>
