@@ -406,7 +406,7 @@ endif;
 endif; ?>
 
 <?php if ((isset($_POST["TYPE"]) && $_POST["TYPE"] == 1) && $database == "committees"):
-
+    $keyword=strtoupper($keyword);
     $context = $database . '?committee_id=' . $keyword . '&chamber=' . $chamber . '&apikey=4acd972a599843bd93ea4dba171a483f';
     $url = $PREFIX . $context;
 
@@ -431,6 +431,7 @@ endif; ?>
 endif; ?>
 
 <?php if ((isset($_POST["TYPE"]) && $_POST["TYPE"] == 1) && $database == "bills"):
+    $keyword=strtolower($keyword);
     $context = $database . '?bill_id=' . $keyword . '&chamber=' . $chamber . '&apikey=4acd972a599843bd93ea4dba171a483f';
     $url = $PREFIX . $context;
 
@@ -469,7 +470,7 @@ endif; ?>
 endif; ?>
 
 <?php if ((isset($_POST["TYPE"]) && $_POST["TYPE"] == 1) && $database == "amendments"):
-
+    $keyword=strtolower($keyword);
     $context = $database . '?amendment_id=' . $keyword . '&chamber=' . $chamber . '&apikey=4acd972a599843bd93ea4dba171a483f';
     $url = $PREFIX . $context;
 
