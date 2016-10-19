@@ -157,7 +157,7 @@ endif;
         window.location.assign(window.location.href);
     }
     function formcheck() {
-        if (document.getElementById("db").value == "noinput" && document.getElementById("kys").value == "") {
+        if (document.getElementById("db").value == "noinput" && document.getElementById("kys").value.trim() == "") {
             alert("Please enter the following missing information: Congress database, Keyword");
             return false;
         }
@@ -166,10 +166,11 @@ endif;
             alert("Please enter the following missing information: Congress database");
             return false;
         }
-        else if (document.getElementById("kys").value == "") {
+        else if (document.getElementById("kys").value.trim() == "") {
             alert("Please enter the following missing information: Keyword");
             return false;
         }
+
         else {
             return true;
         }
