@@ -275,7 +275,7 @@ endif;
                     <td></td>
                     <td>
                         <input type="submit" name="submit" value="Search">
-                        <input type="button" value="Reset" onclick="rst()">
+                        <input type="button" value="Clear" onclick="rst()">
                     </td>
                 </tr>
             </table>
