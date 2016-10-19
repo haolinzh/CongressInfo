@@ -1,5 +1,6 @@
 <html>
 <head>
+    <meta charset="utf-8"/>
     <title>Forecast</title>
     <style>
         body {
@@ -342,7 +343,6 @@ endif;
     } else {
         $splname = explode(" ", $keyword);
 
-
         if (sizeof($splname) == 1) {
             $context = $database . '?chamber=' . $chamber . '&query=' . $keyword . '&apikey=4acd972a599843bd93ea4dba171a483f';
             $url = $PREFIX . $context;
@@ -370,7 +370,59 @@ endif;
             }
         } elseif (sizeof($splname) == 2) {
             $firstname = $splname[0];
+            $firstname = strtolower($firstname);
+            $firstname = ucfirst($firstname);
             $lastname = $splname[1];
+            $lastname = strtolower($lastname);
+
+            if ($lastname[0] == 'm' && $lastname[1] == 'c') {
+                $lastname[2] = strtoupper($lastname[2]);
+            }
+
+            $lastname = ucfirst($lastname);
+
+            $context = $database . '?chamber=' . $chamber . '&first_name=' . $firstname . '&last_name=' . $lastname . '&apikey=4acd972a599843bd93ea4dba171a483f';
+            $url = $PREFIX . $context;
+
+            $html = file_get_contents($url);
+            $res = json_decode($html);
+
+            echo "<br>";
+            $cout = count($res->results);
+            if ($cout == 0) {
+                echo "<h3>The API returned zero results for the request.</h3>";
+            } else {
+
+                echo "<table class='tab' align='center'><tr><th><strong>Name</strong></th><th><strong>State</strong></th><th><strong>Chamber</strong></th><th><strong>Detail</strong></th></tr> ";
+                for ($i = 0; $i < $cout; $i++) {
+                    $name = $res->results[$i]->first_name . " " . $res->results[$i]->last_name;
+                    $state = $res->results[$i]->state_name;
+                    $chamber = $res->results[$i]->chamber;
+                    $bioid = $res->results[$i]->bioguide_id;
+                    $state2 = $res->results[$i]->state;
+                    echo "<tr><td>$name</td><td>$state</td><td>$chamber</td><td><a href = \"javascript:biodetail('$chamber','$bioid','$state2','$database','$keyword');\">View Details</a></td></tr>";
+                }
+                echo "</table>";
+            }
+        } elseif (sizeof($splname) == 3) {
+            $firstname = $splname[0];
+            $firstname = strtolower($firstname);
+            $firstname = ucfirst($firstname);
+
+            $splname[1] = strtolower($splname[1]);
+
+            if ($splname[1][0] == 'm' && $splname[1][1] == 'c') {
+                $splname[1][2] = strtoupper($splname[1][2]);
+            }
+
+            $splname[1] = ucfirst($splname[1]);
+            $splname[2] = strtolower($splname[2]);
+            $splname[2] = ucfirst($splname[2]);
+
+            $lastname = $splname[1] . " " . $splname[2];
+
+            $lastname = rawurlencode($lastname);
+
 
             $context = $database . '?chamber=' . $chamber . '&first_name=' . $firstname . '&last_name=' . $lastname . '&apikey=4acd972a599843bd93ea4dba171a483f';
             $url = $PREFIX . $context;
@@ -404,6 +456,7 @@ endif;
 endif; ?>
 
 <?php if ((isset($_POST["TYPE"]) && $_POST["TYPE"] == 1) && $database == "committees"):
+    $keyword = rawurlencode($keyword);
     $keyword = strtoupper($keyword);
     $context = $database . '?committee_id=' . $keyword . '&chamber=' . $chamber . '&apikey=4acd972a599843bd93ea4dba171a483f';
     $url = $PREFIX . $context;
@@ -429,6 +482,7 @@ endif; ?>
 endif; ?>
 
 <?php if ((isset($_POST["TYPE"]) && $_POST["TYPE"] == 1) && $database == "bills"):
+    $keyword = rawurlencode($keyword);
     $keyword = strtolower($keyword);
     $context = $database . '?bill_id=' . $keyword . '&chamber=' . $chamber . '&apikey=4acd972a599843bd93ea4dba171a483f';
     $url = $PREFIX . $context;
@@ -468,6 +522,7 @@ endif; ?>
 endif; ?>
 
 <?php if ((isset($_POST["TYPE"]) && $_POST["TYPE"] == 1) && $database == "amendments"):
+    $keyword = rawurlencode($keyword);
     $keyword = strtolower($keyword);
     $context = $database . '?amendment_id=' . $keyword . '&chamber=' . $chamber . '&apikey=4acd972a599843bd93ea4dba171a483f';
     $url = $PREFIX . $context;
